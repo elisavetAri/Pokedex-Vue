@@ -1,50 +1,43 @@
-<!-- <template>
-
-  <h1> POKEDEX</h1>
-  
-  <ul :class="'result.gen3_species'" v-for="pokemon in result.gen3_species" :key="pokemon.id">
-  <li>{{ pokemon.name }}</li>
-  <li>{{ pokemon.id }}</li>
-  </ul>
-  
-  
-  
-  
-  
-  
-  
-   <p v-if="error">Something went wrong...</p>
-    <p v-if="loading">Loading...</p>
-    <p v-else v-for="pokemon in result.gen3_species" :key="pokemon.id">
-  
-      {{ pokemon.name }}  {{ pokemon.id }}
-    </p> 
-  
-    <div></div>
-  </template>
-   -->
 
   <template>
-      <!-- <ul :class="'result.gen3_species'" v-for="pokemon in result.gen3_species" :key="pokemon.id">
-  <li>{{ pokemon.name }}</li>
-  <li>{{ pokemon.id }}</li>
-  </ul>
-   -->
-    <v-card
+
+    <v-card style="overflow: initial; z-index: initial"
     :class="'result.gen3_species'" v-for="pokemon in result.gen3_species" :key="pokemon.id"
       class="mx-auto"
-      width="400"
-      prepend-icon="mdi-home"
+      max-width="344"
+      variant="tonal"
+      hover
+      link
     >
-      <template v-slot:title>
-     
-        {{ pokemon.name }}
-      </template>
-  
-      <v-card-text>
-       
-        {{ pokemon.id }}
+         <v-card-text>
+        {{'Name: ' + pokemon.name }} <br>
+        {{ 'ID: '+ pokemon.id }}
+        <v-card-actions>
+      <v-btn
+        color="orange-lighten-2"
+        variant="text"
+      >
+        Pokemon Details
+      </v-btn>
+      <!-- <v-spacer></v-spacer> -->
+      <v-btn
+        :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+        @click="show = !show"
+      ></v-btn>
+    </v-card-actions>
+    <v-btn size="small" color="surface-variant" variant="text" icon="mdi-heart"></v-btn>
       </v-card-text>
+  
+    <v-expand-transition>
+      <div v-show="show">
+        <v-divider></v-divider>
+        <v-card-text>
+        {{ 'Color: '+ pokemon.pokemon_v2_pokemoncolor.name }}  <br>
+        {{ 'Legendary: ' + pokemon.is_legendary }}
+        </v-card-text>
+      </div>
+    </v-expand-transition>
+ 
     </v-card>
   </template>
 
@@ -55,11 +48,22 @@ import { useQuery } from '@vue/apollo-composable'
 
 
 const CHARACTERS_QUERY = gql`
-  query samplePokeAPIquery {
+query samplePokeAPIquery {
   gen3_species: pokemon_v2_pokemonspecies(where: {pokemon_v2_generation: {name: {_eq: "generation-iii"}}}, order_by: {id: asc}) {
     name
+
+   pokemon_v2_pokemoncolor {
+     name
+   }pokemon_v2_pokemonegggroups {
+     pokemon_v2_egggroup {
+       name
+     }
+   }
+    is_legendary
+
     id
   }
+  
   generations: pokemon_v2_generation {
     name
     pokemon_species: pokemon_v2_pokemonspecies_aggregate {
@@ -76,6 +80,7 @@ export default {
   data () {
     const { result, loading, error } = useQuery(CHARACTERS_QUERY);
     return {
+      show: false,
       result,
       loading, 
       error
