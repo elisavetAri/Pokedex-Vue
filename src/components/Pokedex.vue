@@ -1,51 +1,71 @@
 
-  <template>
 
-    <v-card style="overflow: initial; z-index: initial"
-    :class="'result.gen3_species'" v-for="pokemon in result.gen3_species" :key="pokemon.id"
-      class="mx-auto"
-      max-width="344"
-      variant="tonal"
-      hover
-      link
-    >
-         <v-card-text>
-        {{'Name: ' + pokemon.name }} <br>
-        {{ 'ID: '+ pokemon.id }}
-        <v-card-actions>
+
+<template>
+<v-container >
+    <v-row  selected-class="bg-primary" v-for="pokemon in result.gen3_species" :key="pokemon.id" >
+      <v-col cols="12" md="4">
+        <v-card class="mx-auto" 
+                :class="['d-inline-flex align-center']"
+                dark> 
+                <div
+                  class="text-h6 flex-grow-1 text-center"
+                >
+                </div>
+                <pokemon-image :pokemon-id="pokemon.id">
+            <v-card-title>{{ pokemon.name }}
+              </v-card-title>
+          <v-img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/
+              {{ pokemon.id }}.png"> </v-img>
+          </pokemon-image>
+          <v-card-actions >
       <v-btn
-        color="orange-lighten-2"
         variant="text"
+        color="teal-accent-4"
+        @click="reveal = true"
       >
-        Pokemon Details
+        Learn More
       </v-btn>
-      <!-- <v-spacer></v-spacer> -->
-      <v-btn
-        :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-        @click="show = !show"
-      ></v-btn>
-    </v-card-actions>
-    <v-btn size="small" color="surface-variant" variant="text" icon="mdi-heart"></v-btn>
-      </v-card-text>
-  
+    </v-card-actions>     
     <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-        <v-card-text>
-        {{ 'Color: '+ pokemon.pokemon_v2_pokemoncolor.name }}  <br>
-        {{ 'Legendary: ' + pokemon.is_legendary }}
+      <v-card
+        v-if="reveal"
+        class="v-card--reveal"
+        style="height: 100px;"
+      >
+        <v-card-text class="pb-0">
+          <p class="text-h4 text--primary">
+           {{ 'Color: '+ pokemon.pokemon_v2_pokemoncolor.name }}
+          </p>
+          <p>   {{ 'Legendary: ' + pokemon.is_legendary }}</p>
         </v-card-text>
-      </div>
-    </v-expand-transition>
+        <v-card-actions class="pt-0">
+          <v-btn
+            variant="text"
+            color="teal-accent-4"
+            @click="reveal = false"
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-expand-transition>   
+    <v-card-actions>
+            <v-spacer></v-spacer>
+            <Favorite :pokemon-id="pokemon.id"></Favorite>
+          </v-card-actions>
+        </v-card>
+   
+      </v-col>
+    </v-row>
+  </v-container>
  
-    </v-card>
-  </template>
-
-
-<script>
+  
+    </template>
+<script >
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-
+import Favorite from './Favorite.vue';
 
 const CHARACTERS_QUERY = gql`
 query samplePokeAPIquery {
@@ -74,29 +94,17 @@ query samplePokeAPIquery {
   }
 }
 `
-
 export default {
   name: 'App',
   data () {
     const { result, loading, error } = useQuery(CHARACTERS_QUERY);
     return {
-      show: false,
+    reveal: false,
       result,
       loading, 
-      error
+      error,
     }
-  }
-}
+  },
 
+}
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

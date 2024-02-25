@@ -10,7 +10,6 @@ import { createApp } from 'vue'
 export default createVuetify({
   theme: {
     defaultTheme: 'light',
-    //
   },
 
 })
