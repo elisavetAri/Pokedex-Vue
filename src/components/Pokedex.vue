@@ -3,9 +3,20 @@
 
 <template>
 <v-container >
-    <v-row  selected-class="bg-primary" v-for="pokemon in result.gen3_species" :key="pokemon.id" >
+
+  <!-- <v-text-field
+        v-model="search"
+        label="Search for pokemon"
+        prepend-inner-icon="mdi-magnify"
+        single-line
+        variant="outlined"
+        hide-details
+      ></v-text-field> -->
+    <v-row v-for="pokemon in result.gen3_species" :key="pokemon.id" >
       <v-col cols="12" md="4">
         <v-card class="mx-auto" 
+        variant="tonal"
+        style="height: 100%;  width: 80%;"
                 :class="['d-inline-flex align-center']"
                 dark> 
                 <div
@@ -13,7 +24,7 @@
                 >
                 </div>
                 <pokemon-image :pokemon-id="pokemon.id">
-            <v-card-title>{{ pokemon.name }}
+            <v-card-title class="text-h6 text-left text-left" >{{ pokemon.name }}
               </v-card-title>
           <v-img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/
               {{ pokemon.id }}.png"> </v-img>
@@ -31,10 +42,10 @@
       <v-card
         v-if="reveal"
         class="v-card--reveal"
-        style="height: 100px;"
+        style="height: 100%; width: 80%;"
       >
         <v-card-text class="pb-0">
-          <p class="text-h4 text--primary">
+          <p>
            {{ 'Color: '+ pokemon.pokemon_v2_pokemoncolor.name }}
           </p>
           <p>   {{ 'Legendary: ' + pokemon.is_legendary }}</p>
@@ -66,6 +77,7 @@
 import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 import Favorite from './Favorite.vue';
+import { computed } from 'vue';
 
 const CHARACTERS_QUERY = gql`
 query samplePokeAPIquery {
@@ -94,6 +106,7 @@ query samplePokeAPIquery {
   }
 }
 `
+
 export default {
   name: 'App',
   data () {
@@ -103,8 +116,13 @@ export default {
       result,
       loading, 
       error,
+      search:''
     }
   },
-
+  // computed:{
+  //   searchPokemon(){
+  //     return this.result.gen3_species.filter(e => e.name.toLowerCase().indexOf(this.search.toLowerCase()));
+  //   }
+  // }
 }
 </script>
