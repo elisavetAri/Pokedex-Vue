@@ -9,7 +9,8 @@ declare module 'vue' {
   export interface GlobalComponents {
     Favorite: typeof import('./src/components/Favorite.vue')['default']
     Pokedex: typeof import('./src/components/Pokedex.vue')['default']
+    PokemonCard: typeof import('./src/components/PokemonCard.vue')['default']
     PokemonImage: typeof import('./src/components/PokemonImage.vue')['default']
-    PokemonTable: typeof import('./src/components/PokemonTable.vue')['default']
+    ReavelCard: typeof import('./src/components/ReavelCard.vue')['default']
   }
 }
